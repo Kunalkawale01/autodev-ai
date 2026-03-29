@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AutoDev AI</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: white;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  width: 65%;
+  padding: 10px;
+}
+
+button {
+  padding: 10px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+}
+
+#output {
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>🤖 AutoDev AI</h1>
+
+<div class="card">
+<input id="task" placeholder="Enter task..." />
+<button onclick="runTask()">Run</button>
+<p id="loading"></p>
+</div>
+
+<div class="card">
+<h3>Output</h3>
+<div id="output"></div>
+</div>
+
+<div class="card">
+<h3>Memory</h3>
+<pre id="memory"></pre>
+</div>
+
+</div>
+
+<script>
+async function runTask() {
+  const task = document.getElementById('task').value;
+  const output = document.getElementById('output');
+  const loading = document.getElementById('loading');
+
+  loading.innerText = "AI thinking...";
+  output.innerText = "";
+
+  const res = await fetch('/run', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({task})
+  });
+
+  const data = await res.json();
+
+  loading.innerText = "";
+
+  const text = data.build + "\n" + data.review + "\n" + data.test;
+
+  let i = 0;
+  function type() {
+    if(i < text.length){
+      output.innerText += text[i];
+      i++;
+      setTimeout(type, 10);
+    }
+  }
+  type();
+
+  loadMemory();
+}
+
+async function loadMemory() {
+  const res = await fetch('/memory');
+  const data = await res.json();
+  document.getElementById('memory').innerText =
+    JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>
