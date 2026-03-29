@@ -6,7 +6,7 @@
 <style>
 body {
   margin: 0;
-  font-family: 'Segoe UI';
+  font-family: 'Segoe UI', sans-serif;
   background: linear-gradient(135deg, #0f172a, #020617);
   color: white;
 }
@@ -19,30 +19,40 @@ body {
 
 .card {
   background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
   padding: 20px;
-  border-radius: 15px;
   margin-bottom: 20px;
-}
-
-h1 {
-  text-align: center;
 }
 
 input {
   width: 65%;
-  padding: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
 }
 
 button {
-  padding: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
   background: #3b82f6;
   color: white;
-  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2563eb;
 }
 
 #output {
   white-space: pre-wrap;
   font-family: monospace;
+}
+
+.stat {
+  font-size: 14px;
+  color: #94a3b8;
 }
 </style>
 </head>
@@ -50,33 +60,42 @@ button {
 <body>
 
 <div class="container">
-<h1>🤖 AutoDev AI</h1>
+
+<h1 style="text-align:center;">🤖 AutoDev AI</h1>
 
 <div class="card">
-<input id="task" placeholder="Enter task..." />
-<button onclick="runTask()">Run</button>
-<p id="loading"></p>
+  <input id="task" placeholder="Describe your task..." />
+  <button onclick="runTask()">Run</button>
+  <button onclick="startVoice()">🎙</button>
+  <p id="loading"></p>
 </div>
 
 <div class="card">
-<h3>Output</h3>
-<div id="output"></div>
+  <h3>⚡ AI Output</h3>
+  <div id="output"></div>
 </div>
 
 <div class="card">
-<h3>Memory</h3>
-<pre id="memory"></pre>
+  <h3>📊 Analytics</h3>
+  <p class="stat" id="stats">Tasks completed: 0</p>
+</div>
+
+<div class="card">
+  <h3>🧠 Memory</h3>
+  <pre id="memory"></pre>
 </div>
 
 </div>
 
 <script>
+let count = 0;
+
 async function runTask() {
   const task = document.getElementById('task').value;
   const output = document.getElementById('output');
   const loading = document.getElementById('loading');
 
-  loading.innerText = "AI thinking...";
+  loading.innerText = "⚡ AI is thinking...";
   output.innerText = "";
 
   const res = await fetch('/run', {
@@ -89,26 +108,41 @@ async function runTask() {
 
   loading.innerText = "";
 
-  const text = data.build + "\n" + data.review + "\n" + data.test;
+  const text = data.build + "\\n" + data.review + "\\n" + data.test;
+  typeText(output, text);
 
-  let i = 0;
-  function type() {
-    if(i < text.length){
-      output.innerText += text[i];
-      i++;
-      setTimeout(type, 10);
-    }
-  }
-  type();
+  count++;
+  document.getElementById('stats').innerText = "Tasks completed: " + count;
 
   loadMemory();
 }
 
+function typeText(el, text) {
+  let i = 0;
+  function typing() {
+    if(i < text.length){
+      el.innerText += text[i];
+      i++;
+      setTimeout(typing, 10);
+    }
+  }
+  typing();
+}
+
+function startVoice() {
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.onresult = function(event) {
+    document.getElementById('task').value = event.results[0][0].transcript;
+  };
+  recognition.start();
+}
+
 async function loadMemory() {
-  const res = await fetch('/memory');
-  const data = await res.json();
-  document.getElementById('memory').innerText =
-    JSON.stringify(data, null, 2);
+  try {
+    const res = await fetch('/memory');
+    const data = await res.json();
+    document.getElementById('memory').innerText = JSON.stringify(data, null, 2);
+  } catch {}
 }
 </script>
 
