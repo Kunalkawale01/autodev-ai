@@ -1,0 +1,13 @@
+spec_version: "0.1.0"
+name: autodev-ai-pro
+version: 2.0.0
+description: "Autonomous multi-agent AI developer system"
+
+model:
+  preferred: claude-sonnet-4-5-20250929
+
+skills:
+  - builder
+  - reviewer
+  - tester
+  - explainer

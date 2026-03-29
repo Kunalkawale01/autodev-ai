@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "gitclaw": "latest",
+    "express": "latest"
+  }
+}
