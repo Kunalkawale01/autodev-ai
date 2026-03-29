@@ -11,78 +11,125 @@ function generateResponse(task) {
   let review = "";
   let test = "";
 
+  // 🐛 BUG FIXING
   if (task.includes("bug") || task.includes("fix")) {
     build = `
 👷 BUILDER AGENT:
-✔ Detected bugs and fixed logic
+✔ Scanned project files
+✔ Detected logical bugs
+✔ Fixed incorrect operations
 
 Result:
-- Bugs resolved
+- Bugs resolved successfully
+- Code stabilized
 `;
 
     review = `
 🔍 REVIEWER AGENT:
-✔ Verified fixes
-✔ Suggested improvements
+✔ Checked bug fixes
+✔ Ensured no regression issues
+
+Feedback:
+- Use strict equality (===)
+- Add error handling
 `;
 
     test = `
 🧪 TESTER AGENT:
-✔ Created test cases
-✔ Verified outputs
+✔ Generated test cases for bug scenarios
+✔ Verified correct outputs
+
+Example:
+Input: add(2,3)
+Output: 5 ✅
 `;
   }
 
+  // ✨ FEATURE CREATION
   else if (task.includes("feature") || task.includes("add")) {
     build = `
 👷 BUILDER AGENT:
-✔ Implemented new feature
-✔ Updated structure
+✔ Designed new feature
+✔ Created required logic and structure
+
+Result:
+- Feature implemented successfully
+- Integrated into project
 `;
 
     review = `
 🔍 REVIEWER AGENT:
-✔ Checked scalability
+✔ Reviewed new feature
+✔ Ensured clean architecture
+
+Feedback:
+- Follow modular design
+- Keep components reusable
 `;
 
     test = `
 🧪 TESTER AGENT:
-✔ Feature tested successfully
+✔ Created feature test cases
+✔ Validated functionality
+
+Example:
+Feature works as expected ✅
 `;
   }
 
+  // ⚡ PERFORMANCE
   else if (task.includes("performance") || task.includes("optimize")) {
     build = `
 👷 BUILDER AGENT:
-✔ Optimized slow code
-✔ Reduced execution time
+✔ Optimized slow functions
+✔ Reduced unnecessary loops
+
+Result:
+- Performance improved
+- Faster execution time
 `;
 
     review = `
 🔍 REVIEWER AGENT:
-✔ Checked efficiency
+✔ Verified optimizations
+✔ Checked memory efficiency
+
+Feedback:
+- Avoid redundant calculations
+- Use caching where possible
 `;
 
     test = `
 🧪 TESTER AGENT:
-✔ Performance improved
+✔ Benchmarked performance
+✔ Compared before/after
+
+Result:
+Execution time reduced ✅
 `;
   }
 
+  // 📚 DEFAULT
   else {
     build = `
 👷 BUILDER AGENT:
-✔ Processed task: "${task}"
+✔ Analyzed request: "${task}"
+✔ Applied general improvements
+
+Result:
+- Task processed successfully
 `;
 
     review = `
 🔍 REVIEWER AGENT:
-✔ General review completed
+✔ Reviewed overall structure
+✔ Suggested best practices
 `;
 
     test = `
 🧪 TESTER AGENT:
-✔ Basic validation done
+✔ Created basic validation tests
+✔ Verified outputs
 `;
   }
 
@@ -90,7 +137,10 @@ Result:
 }
 
 async function run(task) {
+  console.log("🚀 AI Dev Team Running...\n");
+
   await fakeDelay(300);
+
   const result = generateResponse(task);
 
   saveMemory({ task, date: new Date() });
